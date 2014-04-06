@@ -15,18 +15,40 @@
   return
 
 )( this, ( root, TwoDimensionalArray ) ->  
+  
+  # http://youmightnotneedjquery.com/#extend
+  extend = ( out ) ->
+    out or= {}
+    for arg in arguments
+      continue unless arg
+      for key, val of arg
+        if arg.hasOwnProperty( key )
+          out[key] = val
+    return out
+
+  defaults =
+    value : false
+    
 
   class TwoDimensionalArray extends Array
-    constructor : ( dim1size, dim2size, options ) ->      
+    constructor : ( param1, param2, options ) ->
+      
+      settings = extend( {}, defaults, ( options or= {} ) )
+      
+      # see if we're passing in a vanilla 2d array
+      if param1 instanceof Array and param1[0] instanceof Array
+        
       for i in [ 0...d1 ]
-        arr = []
+        this[i] = []
+        this[i].length = d1
         for j in [ 0...d2 ]
-          arr.push do ->
-
+          this[i][j] = []
+          this[i][j].length = d2
+          
     # Callback receives ( currentItem, rowIndex, columnIndex, 2dArray )
     forEach : ( callback ) ->
       for row, i in this
-        for item, j in this[0]
+        for item, j in row
           callback( item, i, j, this )
 
     # An alias to forEach
@@ -40,5 +62,8 @@
       for row, i in this
         for item, j in row
           map[i][j] = callback( item, i, j, this )
+
+    size : ->
+      return [ this.length, this[0].length ]
 
 )
