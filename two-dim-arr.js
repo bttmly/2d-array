@@ -14,7 +14,7 @@
       root.TwoDimensionalArray = factory(root, {});
     }
   })(this, function(root, TwoDimensionalArray) {
-    var defaults, extend;
+    var defaults, extend, previousTwoDimensionalArray;
     extend = function(out) {
       var arg, key, val, _i, _len;
       out || (out = {});
@@ -31,23 +31,41 @@
       }
       return out;
     };
-    defaults = {
-      value: false
-    };
-    return TwoDimensionalArray = (function(_super) {
+    defaults = {};
+    previousTwoDimensionalArray = root.TwoDimensionalArray;
+    TwoDimensionalArray = (function(_super) {
       __extends(TwoDimensionalArray, _super);
 
       function TwoDimensionalArray(param1, param2, options) {
-        var i, j, settings, _i, _j;
-        settings = extend({}, defaults, (options || (options = {})));
-        this.length = x;
+        var i, j, len1, len2, passThru, settings, _i, _j, _k;
+        if (param1 instanceof Array && param1[0] instanceof Array) {
+          options = param2 || {};
+          passThru = true;
+          len1 = param1.length;
+          len2 = param1[0].length;
+        } else {
+          len1 = param1;
+          len2 = param2;
+        }
+        settings = extend({}, defaults, options || (options = {}));
+        this.length = len1;
         for (i = _i = 0; 0 <= x ? _i < x : _i > x; i = 0 <= x ? ++_i : --_i) {
           this[i] = [];
-          this[i].length = y;
+          this[i].length = len2;
         }
         if (settings.value != null) {
-          for (j = _j = 0; 0 <= y ? _j < y : _j > y; j = 0 <= y ? ++_j : --_j) {
-            this[i][j] = typeof settings.value === "function" ? settings.value(i, j) : settings.value;
+          for (i = _j = 0; 0 <= len1 ? _j < len1 : _j > len1; i = 0 <= len1 ? ++_j : --_j) {
+            for (j = _k = 0; 0 <= len2 ? _k < len2 : _k > len2; j = 0 <= len2 ? ++_k : --_k) {
+              this[i][j] = (function() {
+                if (passThru) {
+                  return param1[i][j];
+                } else if (typeof settings.value === "function") {
+                  return settings.value(i, j);
+                } else {
+                  return settings.value;
+                }
+              })();
+            }
           }
         }
       }
@@ -75,22 +93,16 @@
       };
 
       TwoDimensionalArray.prototype.map = function(callback) {
-        var i, item, j, map, row, _i, _len, _results;
+        var i, item, j, map, row, _i, _j, _len, _len1;
         map = new TwoDimensionalArray(this.length, this[0].length);
-        _results = [];
         for (i = _i = 0, _len = this.length; _i < _len; i = ++_i) {
           row = this[i];
-          _results.push((function() {
-            var _j, _len1, _results1;
-            _results1 = [];
-            for (j = _j = 0, _len1 = row.length; _j < _len1; j = ++_j) {
-              item = row[j];
-              _results1.push(map[i][j] = callback(item, i, j, this));
-            }
-            return _results1;
-          }).call(this));
+          for (j = _j = 0, _len1 = row.length; _j < _len1; j = ++_j) {
+            item = row[j];
+            map[i][j] = callback(item, i, j, this);
+          }
         }
-        return _results;
+        return map;
       };
 
       TwoDimensionalArray.prototype.size = function() {
@@ -100,6 +112,11 @@
       return TwoDimensionalArray;
 
     })(Array);
+    TwoDimensionalArray.noConflict = function() {
+      root.TwoDimensionalArray = previousTwoDimensionalArray;
+      return this;
+    };
+    return TwoDimensionalArray;
   });
 
 }).call(this);

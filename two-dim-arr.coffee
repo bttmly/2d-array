@@ -25,26 +25,40 @@
         out[key] = val
     return out
 
-  defaults =
-    value : false
+  defaults = {}
     
+  previousTwoDimensionalArray = root.TwoDimensionalArray
 
   class TwoDimensionalArray extends Array
     constructor : ( param1, param2, options ) ->
       
-      settings = extend( {}, defaults, ( options or= {} ) )
-      
-      # see if we're passing in a vanilla 2d array
-      # if param1 instanceof Array and param1[0] instanceof Array
-        
-      this.length = x     
+      # check if passing vanilla 2d array as param1
+      if param1 instanceof Array and param1[0] instanceof Array
+        options = param2 or {}
+        passThru = true
+        len1 = param1.length
+        len2 = param1[0].length
+      else
+        len1 = param1
+        len2 = param2
+
+      settings = extend( {}, defaults, options or= {} )
+
+      this.length = len1     
       for i in [ 0...x ]
         this[i] = []
-        this[i].length = y
+        this[i].length = len2
 
       if settings.value? 
-        for j in [ 0... y ]
-          this[i][j] = if typeof settings.value is "function" then settings.value( i, j ) else settings.value
+        for i in [ 0...len1 ]
+          for j in [ 0...len2 ]
+            this[i][j] = do ->
+              if passThru
+                return param1[i][j]
+              else if typeof settings.value is "function" 
+                return settings.value( i, j )
+              else
+                return settings.value
           
     # Callback receives ( currentItem, rowIndex, columnIndex, 2dArray )
     forEach : ( callback ) ->
@@ -63,8 +77,17 @@
       for row, i in this
         for item, j in row
           map[i][j] = callback( item, i, j, this )
+      return map
 
     size : ->
       return [ this.length, this[0].length ]
+
+
+
+  TwoDimensionalArray.noConflict = ->
+    root.TwoDimensionalArray = previousTwoDimensionalArray
+    return this
+
+  return TwoDimensionalArray
 
 )
