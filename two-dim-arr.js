@@ -14,15 +14,40 @@
       root.TwoDimensionalArray = factory(root, {});
     }
   })(this, function(root, TwoDimensionalArray) {
+    var defaults, extend;
+    extend = function(out) {
+      var arg, key, val, _i, _len;
+      out || (out = {});
+      for (_i = 0, _len = arguments.length; _i < _len; _i++) {
+        arg = arguments[_i];
+        if (!arg) {
+          continue;
+        }
+        for (key in arg) {
+          if (!__hasProp.call(arg, key)) continue;
+          val = arg[key];
+          out[key] = val;
+        }
+      }
+      return out;
+    };
+    defaults = {
+      value: false
+    };
     return TwoDimensionalArray = (function(_super) {
       __extends(TwoDimensionalArray, _super);
 
-      function TwoDimensionalArray(dim1size, dim2size, options) {
-        var arr, i, j, _i, _j;
-        for (i = _i = 0; 0 <= d1 ? _i < d1 : _i > d1; i = 0 <= d1 ? ++_i : --_i) {
-          arr = [];
-          for (j = _j = 0; 0 <= d2 ? _j < d2 : _j > d2; j = 0 <= d2 ? ++_j : --_j) {
-            arr.push((function() {})());
+      function TwoDimensionalArray(param1, param2, options) {
+        var i, j, settings, _i, _j;
+        settings = extend({}, defaults, (options || (options = {})));
+        this.length = x;
+        for (i = _i = 0; 0 <= x ? _i < x : _i > x; i = 0 <= x ? ++_i : --_i) {
+          this[i] = [];
+          this[i].length = y;
+        }
+        if (settings.value != null) {
+          for (j = _j = 0; 0 <= y ? _j < y : _j > y; j = 0 <= y ? ++_j : --_j) {
+            this[i][j] = typeof settings.value === "function" ? settings.value(i, j) : settings.value;
           }
         }
       }
@@ -33,11 +58,10 @@
         for (i = _i = 0, _len = this.length; _i < _len; i = ++_i) {
           row = this[i];
           _results.push((function() {
-            var _j, _len1, _ref, _results1;
-            _ref = this[0];
+            var _j, _len1, _results1;
             _results1 = [];
-            for (j = _j = 0, _len1 = _ref.length; _j < _len1; j = ++_j) {
-              item = _ref[j];
+            for (j = _j = 0, _len1 = row.length; _j < _len1; j = ++_j) {
+              item = row[j];
               _results1.push(callback(item, i, j, this));
             }
             return _results1;
@@ -67,6 +91,10 @@
           }).call(this));
         }
         return _results;
+      };
+
+      TwoDimensionalArray.prototype.size = function() {
+        return [this.length, this[0].length];
       };
 
       return TwoDimensionalArray;

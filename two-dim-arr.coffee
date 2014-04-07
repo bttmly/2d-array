@@ -21,9 +21,8 @@
     out or= {}
     for arg in arguments
       continue unless arg
-      for key, val of arg
-        if arg.hasOwnProperty( key )
-          out[key] = val
+      for own key, val of arg
+        out[key] = val
     return out
 
   defaults =
@@ -36,14 +35,16 @@
       settings = extend( {}, defaults, ( options or= {} ) )
       
       # see if we're passing in a vanilla 2d array
-      if param1 instanceof Array and param1[0] instanceof Array
+      # if param1 instanceof Array and param1[0] instanceof Array
         
-      for i in [ 0...d1 ]
+      this.length = x     
+      for i in [ 0...x ]
         this[i] = []
-        this[i].length = d1
-        for j in [ 0...d2 ]
-          this[i][j] = []
-          this[i][j].length = d2
+        this[i].length = y
+
+      if settings.value? 
+        for j in [ 0... y ]
+          this[i][j] = if typeof settings.value is "function" then settings.value( i, j ) else settings.value
           
     # Callback receives ( currentItem, rowIndex, columnIndex, 2dArray )
     forEach : ( callback ) ->
