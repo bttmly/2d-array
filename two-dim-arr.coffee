@@ -45,7 +45,7 @@
       settings = extend( {}, defaults, options or= {} )
 
       this.length = len1     
-      for i in [ 0...x ]
+      for e, i in this
         this[i] = []
         this[i].length = len2
 

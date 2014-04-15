@@ -37,7 +37,7 @@
       __extends(TwoDimensionalArray, _super);
 
       function TwoDimensionalArray(param1, param2, options) {
-        var i, j, len1, len2, passThru, settings, _i, _j, _k;
+        var e, i, j, len1, len2, passThru, settings, _i, _j, _k, _len;
         if (param1 instanceof Array && param1[0] instanceof Array) {
           options = param2 || {};
           passThru = true;
@@ -49,7 +49,8 @@
         }
         settings = extend({}, defaults, options || (options = {}));
         this.length = len1;
-        for (i = _i = 0; 0 <= x ? _i < x : _i > x; i = 0 <= x ? ++_i : --_i) {
+        for (i = _i = 0, _len = this.length; _i < _len; i = ++_i) {
+          e = this[i];
           this[i] = [];
           this[i].length = len2;
         }
