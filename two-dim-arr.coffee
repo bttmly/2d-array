@@ -66,27 +66,30 @@
         for item, j in row
           callback( item, i, j, this )
 
-    # An alias to forEach
+    # An alias of forEach
     each : ->
       return this.forEach.apply( this, arguments )
 
     # Callback receives ( currentItem, rowIndex, columnIndex, 2dArray )
     # Returns a new instance of this class.
     map : ( callback ) ->
-      map = new TwoDimensionalArray( this.length, this[0].length )
-      for row, i in this
+      map = new TwoDimensionalArray( @.length, @[0].length )
+      for row, i in @
         for item, j in row
-          map[i][j] = callback( item, i, j, this )
+          map[i][j] = callback( item, i, j, @ )
       return map
 
     size : ->
-      return [ this.length, this[0].length ]
+      return [ @.length, @[0].length ]
+
+    at : ( a, b ) ->
+      return @[a][b]
 
 
 
   TwoDimensionalArray.noConflict = ->
     root.TwoDimensionalArray = previousTwoDimensionalArray
-    return this
+    @
 
   return TwoDimensionalArray
 

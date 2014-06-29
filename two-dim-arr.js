@@ -110,6 +110,10 @@
         return [this.length, this[0].length];
       };
 
+      TwoDimensionalArray.prototype.at = function(a, b) {
+        return this[a][b];
+      };
+
       return TwoDimensionalArray;
 
     })(Array);
